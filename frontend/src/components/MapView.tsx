@@ -173,7 +173,7 @@ export const MapView: React.FC<MapViewProps> = ({
                   </div>
                   <Link
                     to={`/reports/${report.id}`}
-                    className="block text-center py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold shadow-subtle transition"
+                    className="block text-center py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-xs font-semibold shadow-sm transition"
                   >
                     View Details
                   </Link>

@@ -122,13 +122,13 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
               <div className="flex items-center space-x-3">
                 <Link
                   to="/login"
-                  className="text-sm font-medium text-navy hover:text-primary px-3.5 py-2 rounded-lg transition"
+                  className="text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 px-3.5 py-2 rounded-xl transition"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition"
+                  className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-sm transition focus-visible:ring-2 focus-visible:ring-[#2563EB]"
                 >
                   Get Started
                 </Link>
@@ -208,18 +208,18 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
           ) : (
             <div className="pt-2 border-t border-surfaceBorder flex flex-col space-y-2">
               <Link
-                to="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2 text-sm font-medium text-navy hover:bg-slate-50 rounded-lg"
-              >
-                Sign In
-              </Link>
-              <Link
                 to="/register"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2 text-sm font-medium bg-primary text-white rounded-lg shadow-sm"
+                className="w-full text-center py-2.5 text-sm font-semibold bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl shadow-sm transition"
               >
                 Get Started
+              </Link>
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full text-center py-2.5 text-sm font-semibold bg-white text-gray-800 border border-gray-300 hover:bg-gray-50 rounded-xl transition"
+              >
+                Sign In
               </Link>
             </div>
           )}

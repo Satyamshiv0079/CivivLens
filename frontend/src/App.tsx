@@ -84,7 +84,7 @@ export const App: React.FC = () => {
             />
           </Routes>
         </main>
-        <footer className="bg-card border-t border-surfaceBorder py-8 mt-12 text-sm text-slate-text">
+        <footer className="bg-card border-t border-surfaceBorder py-8 mt-6 text-sm text-slate-text">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4 text-center sm:text-left">
               <span className="font-bold text-navy">CivicLens</span>

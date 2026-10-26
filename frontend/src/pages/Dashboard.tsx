@@ -276,7 +276,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             setStep(1);
             setShowCreateModal(true);
           }}
-          className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-xl shadow-subtle transition flex items-center space-x-2 flex-shrink-0"
+          className="px-5 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-sm font-semibold rounded-xl shadow-sm transition flex items-center space-x-2 flex-shrink-0"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Report an Issue</span>
@@ -506,7 +506,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                       type="button"
                       disabled={!title.trim() || !description.trim()}
                       onClick={() => setStep(2)}
-                      className="px-5 py-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white text-sm font-semibold rounded-xl shadow-subtle flex items-center gap-1.5 transition"
+                      className="px-5 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow-sm flex items-center gap-1.5 transition"
                     >
                       <span>Continue to Evidence</span>
                       <ArrowRight className="w-4 h-4" />
@@ -568,14 +568,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                     <button
                       type="button"
                       onClick={() => setStep(1)}
-                      className="px-4 py-2 border border-surfaceBorder rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition"
+                      className="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-xl text-sm font-semibold transition shadow-sm"
                     >
                       &larr; Back
                     </button>
                     <button
                       type="button"
                       onClick={() => setStep(3)}
-                      className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-xl shadow-subtle flex items-center gap-1.5 transition"
+                      className="px-5 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-sm font-semibold rounded-xl shadow-sm flex items-center gap-1.5 transition"
                     >
                       <span>Continue to Location</span>
                       <ArrowRight className="w-4 h-4" />
@@ -630,14 +630,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="px-4 py-2 border border-surfaceBorder rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition"
+                      className="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-xl text-sm font-semibold transition shadow-sm"
                     >
                       &larr; Back
                     </button>
                     <button
                       type="button"
                       onClick={() => setStep(4)}
-                      className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-xl shadow-subtle flex items-center gap-1.5 transition"
+                      className="px-5 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-sm font-semibold rounded-xl shadow-sm flex items-center gap-1.5 transition"
                     >
                       <span>Review Submission</span>
                       <ArrowRight className="w-4 h-4" />
@@ -703,14 +703,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                       type="button"
                       disabled={submitting}
                       onClick={() => setStep(3)}
-                      className="px-4 py-2 border border-surfaceBorder rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition"
+                      className="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-xl text-sm font-semibold transition shadow-sm disabled:opacity-50"
                     >
                       &larr; Back
                     </button>
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="px-6 py-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white text-sm font-semibold rounded-xl shadow-subtle flex items-center gap-2 transition"
+                      className="px-6 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow-sm flex items-center gap-2 transition"
                     >
                       {submitting ? (
                         <>

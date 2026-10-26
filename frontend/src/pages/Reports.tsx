@@ -128,7 +128,7 @@ export const Reports: React.FC = () => {
 
           <Link
             to="/dashboard"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-xl text-xs font-bold transition shadow-subtle"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-semibold transition shadow-sm"
           >
             <PlusCircle className="w-4 h-4" />
             <span>Submit Issue</span>
@@ -264,14 +264,14 @@ export const Reports: React.FC = () => {
               <button
                 type="button"
                 onClick={clearAllFilters}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-navy rounded-xl text-xs font-bold transition"
+                className="px-4 py-2 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 rounded-xl text-xs font-semibold transition shadow-sm"
               >
                 Reset Filters
               </button>
             )}
             <Link
               to="/dashboard"
-              className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-xl text-xs font-bold transition shadow-subtle"
+              className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-semibold transition shadow-sm"
             >
               Report an Issue
             </Link>
