@@ -4,12 +4,17 @@
 
 @layer base {
   body {
-    @apply bg-canvas text-slate-text antialiased;
+    background-color: #F8FAFC;
+    color: #475569;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply text-navy font-bold tracking-tight;
+    color: #111827;
+    font-weight: 700;
+    letter-spacing: -0.025em;
   }
 
   /* Accessible focus indicators */
@@ -18,7 +23,8 @@
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-white;
+    outline: 2px solid #2563EB;
+    outline-offset: 2px;
   }
 }
 
