@@ -18,32 +18,33 @@ interface MapViewProps {
 
 // Generate colored HTML marker pin based on category
 const createCategoryIcon = (category: IssueCategory) => {
-  let color = '#3b82f6'; // default blue
-  if (category === 'POTHOLE') color = '#ef4444'; // red
-  if (category === 'GARBAGE') color = '#10b981'; // emerald
-  if (category === 'BROKEN_STREETLIGHT') color = '#f59e0b'; // amber
-  if (category === 'WATER_LEAKAGE') color = '#06b6d4'; // cyan
+  let color = '#2563EB'; // primary cobalt
+  if (category === 'POTHOLE') color = '#D97706'; // amber
+  if (category === 'GARBAGE') color = '#059669'; // emerald
+  if (category === 'BROKEN_STREETLIGHT') color = '#CA8A04'; // yellow
+  if (category === 'WATER_LEAKAGE') color = '#0284C7'; // sky
 
   return L.divIcon({
     className: 'custom-pin',
     html: `
       <div style="
         background-color: ${color};
-        width: 24px;
-        height: 24px;
+        width: 26px;
+        height: 26px;
         border-radius: 50%;
-        border: 3px solid white;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        border: 2.5px solid #ffffff;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
         display: flex;
         align-items: center;
         justify-content: center;
+        cursor: pointer;
       ">
-        <div style="background-color: white; width: 6px; height: 6px; border-radius: 50%;"></div>
+        <div style="background-color: #ffffff; width: 7px; height: 7px; border-radius: 50%;"></div>
       </div>
     `,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-    popupAnchor: [0, -12],
+    iconSize: [26, 26],
+    iconAnchor: [13, 13],
+    popupAnchor: [0, -14],
   });
 };
 
@@ -51,22 +52,22 @@ const pickerPin = L.divIcon({
   className: 'picker-pin',
   html: `
     <div style="
-      background-color: #2563eb;
-      width: 28px;
-      height: 28px;
+      background-color: #2563EB;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      border: 3px solid white;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.4);
+      border: 3px solid #ffffff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.35), 0 3px 8px rgba(0,0,0,0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: bounce 1s infinite alternate;
     ">
-      <div style="background-color: white; width: 8px; height: 8px; border-radius: 50%;"></div>
+      <div style="background-color: #ffffff; width: 8px; height: 8px; border-radius: 50%;"></div>
     </div>
   `,
-  iconSize: [28, 28],
-  iconAnchor: [14, 14],
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+  popupAnchor: [0, -16],
 });
 
 // Component to handle map clicks for coordinate selection
@@ -94,13 +95,16 @@ export const MapView: React.FC<MapViewProps> = ({
   reports = [],
   selectedLocation,
   onLocationSelect,
-  center = [12.9716, 77.5946], // Default Bangalore / City coordinates
+  center = [12.9716, 77.5946],
   zoom = 13,
-  height = '450px',
+  height = '460px',
   interactivePicker = false,
 }) => {
   return (
-    <div className="w-full rounded-2xl overflow-hidden border border-gray-200 shadow-sm relative z-0">
+    <div
+      className="w-full rounded-xl overflow-hidden border border-surfaceBorder shadow-subtle relative z-0"
+      style={{ minHeight: '300px' }}
+    >
       <MapContainer
         center={center}
         zoom={zoom}
@@ -108,7 +112,7 @@ export const MapView: React.FC<MapViewProps> = ({
         scrollWheelZoom={false}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
@@ -123,57 +127,60 @@ export const MapView: React.FC<MapViewProps> = ({
         {selectedLocation && (
           <Marker position={[selectedLocation.lat, selectedLocation.lng]} icon={pickerPin}>
             <Popup>
-              <div className="text-xs font-semibold text-gray-800">
-                Selected Issue Location: <br />
-                <span className="font-mono font-normal">
+              <div className="text-xs p-1">
+                <span className="font-bold text-navy">Pinned Location</span>
+                <div className="font-mono text-slate-500 mt-0.5">
                   {selectedLocation.lat.toFixed(5)}, {selectedLocation.lng.toFixed(5)}
-                </span>
+                </div>
               </div>
             </Popup>
           </Marker>
         )}
 
         {/* Render reports markers */}
-        {reports.map((report) => (
-          <Marker
-            key={report.id}
-            position={[report.latitude, report.longitude]}
-            icon={createCategoryIcon(report.category)}
-          >
-            <Popup>
-              <div className="min-w-[200px] p-1">
-                <div className="flex items-center justify-between mb-1 gap-2">
-                  <span className="text-[10px] uppercase font-bold text-gray-500">
-                    {formatCategory(report.category)}
-                  </span>
-                  <StatusBadge status={report.status} />
+        {reports
+          .filter((r) => r.latitude && r.longitude)
+          .map((report) => (
+            <Marker
+              key={report.id}
+              position={[report.latitude, report.longitude]}
+              icon={createCategoryIcon(report.category)}
+            >
+              <Popup>
+                <div className="min-w-[210px] p-1.5 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                      {formatCategory(report.category)}
+                    </span>
+                    <StatusBadge status={report.status} />
+                  </div>
+                  <h4 className="font-bold text-navy text-sm leading-snug line-clamp-2">
+                    {report.title}
+                  </h4>
+                  <p className="text-xs text-slate-text line-clamp-2">
+                    {report.description}
+                  </p>
+                  {report.imageUrl && (
+                    <img
+                      src={report.imageUrl}
+                      alt={report.title}
+                      className="w-full h-24 object-cover rounded-lg border border-surfaceBorder"
+                      loading="lazy"
+                    />
+                  )}
+                  <div className="text-[11px] text-slate-400 truncate">
+                    {report.address || `${report.latitude.toFixed(4)}, ${report.longitude.toFixed(4)}`}
+                  </div>
+                  <Link
+                    to={`/reports/${report.id}`}
+                    className="block text-center py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold shadow-subtle transition"
+                  >
+                    View Details
+                  </Link>
                 </div>
-                <h4 className="font-bold text-gray-900 text-sm mb-1 leading-snug">
-                  {report.title}
-                </h4>
-                <p className="text-xs text-gray-600 line-clamp-2 mb-2">
-                  {report.description}
-                </p>
-                {report.imageUrl && (
-                  <img
-                    src={report.imageUrl}
-                    alt={report.title}
-                    className="w-full h-24 object-cover rounded-md mb-2"
-                  />
-                )}
-                <div className="text-[11px] text-gray-500 mb-2 truncate">
-                  {report.address || `${report.latitude.toFixed(4)}, ${report.longitude.toFixed(4)}`}
-                </div>
-                <Link
-                  to={`/reports/${report.id}`}
-                  className="block text-center py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-medium transition"
-                >
-                  View Details
-                </Link>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+              </Popup>
+            </Marker>
+          ))}
       </MapContainer>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
@@ -84,8 +84,30 @@ export const App: React.FC = () => {
             />
           </Routes>
         </main>
-        <footer className="bg-white border-t border-gray-200 py-6 text-center text-sm text-gray-500">
-          CivicLens &copy; {new Date().getFullYear()} — Transparent Civic Issue Reporting Platform
+        <footer className="bg-card border-t border-surfaceBorder py-8 mt-12 text-sm text-slate-text">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4 text-center sm:text-left">
+              <span className="font-bold text-navy">CivicLens</span>
+              <span className="hidden sm:inline text-slate-300">&bull;</span>
+              <p className="text-xs text-slate-400">
+                Transparent civic issue reporting and municipal accountability.
+              </p>
+            </div>
+            <div className="flex items-center space-x-6 text-xs font-medium">
+              <Link to="/reports" className="hover:text-primary transition">
+                Explore Reports
+              </Link>
+              <Link to="/register" className="hover:text-primary transition">
+                Report Issue
+              </Link>
+              <Link to="/login" className="hover:text-primary transition">
+                Sign In
+              </Link>
+            </div>
+          </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 pt-4 border-t border-slate-100 text-center text-xs text-slate-400">
+            &copy; {new Date().getFullYear()} CivicLens. All rights reserved.
+          </div>
         </footer>
       </div>
     </Router>

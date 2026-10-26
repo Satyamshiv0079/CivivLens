@@ -50,60 +50,60 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto my-8 bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+    <div className="max-w-md mx-auto my-10 bg-card p-8 rounded-2xl shadow-subtle border border-surfaceBorder">
       <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Create an Account</h1>
-        <p className="text-sm text-gray-500 mt-1">Join CivicLens to report and track civic issues</p>
+        <h1 className="text-2xl font-bold text-navy">Create an Account</h1>
+        <p className="text-sm text-slate-text mt-1">Join CivicLens to document and resolve civic concerns</p>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-start space-x-2">
-          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+        <div className="mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 text-sm rounded-xl flex items-start space-x-2">
+          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+          <label className="block text-xs font-bold text-navy uppercase tracking-wider mb-1">
             Full Name
           </label>
           <div className="relative">
-            <UserIcon className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
+            <UserIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Jane Citizen"
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-3 py-2.5 border border-surfaceBorder rounded-xl text-sm text-navy placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+          <label className="block text-xs font-bold text-navy uppercase tracking-wider mb-1">
             Email Address
           </label>
           <div className="relative">
-            <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
+            <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="jane@example.com"
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-3 py-2.5 border border-surfaceBorder rounded-xl text-sm text-navy placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+          <label className="block text-xs font-bold text-navy uppercase tracking-wider mb-1">
             Password (min. 6 characters)
           </label>
           <div className="relative">
-            <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
+            <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
             <input
               type="password"
               required
@@ -111,7 +111,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-3 py-2.5 border border-surfaceBorder rounded-xl text-sm text-navy placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
             />
           </div>
         </div>
@@ -119,7 +119,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-sm transition flex items-center justify-center space-x-2 disabled:opacity-50"
+          className="w-full py-2.5 px-4 bg-primary hover:bg-primary-hover text-white font-bold text-sm rounded-xl shadow-subtle transition flex items-center justify-center space-x-2 disabled:opacity-50"
         >
           {loading ? (
             <span>Creating Account...</span>
@@ -132,9 +132,9 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
         </button>
       </form>
 
-      <div className="mt-6 text-center text-sm text-gray-600">
+      <div className="mt-6 text-center text-xs text-slate-text border-t border-surfaceBorder pt-4">
         Already have an account?{' '}
-        <Link to="/login" className="text-blue-600 font-medium hover:underline">
+        <Link to="/login" className="text-primary font-bold hover:underline">
           Sign in
         </Link>
       </div>
