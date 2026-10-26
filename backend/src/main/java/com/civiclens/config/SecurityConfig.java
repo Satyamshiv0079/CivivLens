@@ -53,15 +53,11 @@ public class SecurityConfig {
                                 "/api/reports/check-duplicates",
                                 "/error"
                         ).permitAll()
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/reports",
-                                "/api/reports/*",
-                                "/api/reports/statistics"
-                        ).permitAll()
-                        .requestMatchers(
-                                "/api/reports/*/status"
-                        ).hasAnyRole("MODERATOR", "ADMIN")
+                        // Privileged report endpoints (evaluated FIRST)
+                        .requestMatchers(HttpMethod.GET, "/api/reports/statistics").hasAnyRole("MODERATOR", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/reports/*/status").hasAnyRole("MODERATOR", "ADMIN")
+                        // Public viewing of reports
+                        .requestMatchers(HttpMethod.GET, "/api/reports", "/api/reports/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

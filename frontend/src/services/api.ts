@@ -70,7 +70,7 @@ export const api = {
   checkHealth: (): Promise<HealthStatus> => request<HealthStatus>('/health'),
 
   // Authentication
-  register: (payload: { name: string; email: string; password: string; role?: string }): Promise<AuthResponse> =>
+  register: (payload: { name: string; email: string; password: string }): Promise<AuthResponse> =>
     request<AuthResponse>('/auth/register', {
       method: 'POST',
       body: JSON.stringify(payload),

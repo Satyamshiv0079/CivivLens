@@ -130,4 +130,26 @@ class ReportControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("VERIFIED"));
     }
+
+    @Test
+    void getStatistics_Unauthenticated_ReturnsUnauthorizedOrForbidden() throws Exception {
+        mockMvc.perform(get("/api/reports/statistics"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "citizen@example.com", roles = {"CITIZEN"})
+    void getStatistics_CitizenRole_Forbidden403() throws Exception {
+        mockMvc.perform(get("/api/reports/statistics"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "moderator@civiclens.gov", roles = {"MODERATOR"})
+    void getStatistics_ModeratorRole_Returns200() throws Exception {
+        when(reportService.getStatistics()).thenReturn(new com.civiclens.dto.ReportStatisticsDto());
+
+        mockMvc.perform(get("/api/reports/statistics"))
+                .andExpect(status().isOk());
+    }
 }

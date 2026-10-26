@@ -133,9 +133,10 @@ public class ReportController {
     }
 
     /**
-     * Get aggregated metrics and report status statistics
+     * Get aggregated metrics and report status statistics (Moderator/Admin only)
      */
     @GetMapping("/statistics")
+    @PreAuthorize("hasAnyRole('MODERATOR', 'ADMIN')")
     public ResponseEntity<ReportStatisticsDto> getStatistics() {
         ReportStatisticsDto stats = reportService.getStatistics();
         return ResponseEntity.ok(stats);

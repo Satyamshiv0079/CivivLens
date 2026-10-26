@@ -76,7 +76,12 @@ CivicLens/
    cp .env.example .env
    ```
 
-2. Configure database credentials, JWT secret key, and port numbers if different from defaults.
+2. **JWT Secret Configuration**:
+   - In production, configure `JWT_SECRET` with a secure random Base64 key (at least 256 bits):
+     ```bash
+     openssl rand -base64 32
+     ```
+   - In development/test profiles (`h2`, `dev`), if `JWT_SECRET` is left blank, an ephemeral in-memory random key is generated automatically to facilitate local developer onboarding without using predictable keys.
 
 ---
 
@@ -89,6 +94,12 @@ docker compose up -d
 
 ### Using Local PostgreSQL
 Ensure PostgreSQL is running locally on port `5432` with a database named `civiclens_db`, user `civiclens_user`, and password `civiclens_pass` (or update `backend/src/main/resources/application.yml`).
+
+### Running in Standalone In-Memory Mode (No Docker/PostgreSQL Needed)
+```bash
+cd backend
+mvn spring-boot:run -Dspring-boot.run.profiles=h2
+```
 
 ---
 
@@ -122,23 +133,23 @@ The frontend development server starts at: `http://localhost:5173`
 | Method | Endpoint | Description | Access |
 |---|---|---|---|
 | `GET` | `/api/health` | Health and status check | Public |
-| `POST` | `/api/auth/register` | Register a new user | Public |
+| `POST` | `/api/auth/register` | Register a new user (always assigned CITIZEN) | Public |
 | `POST` | `/api/auth/login` | Log in and receive JWT token | Public |
 | `GET` | `/api/reports` | List civic reports (filter by status/category) | Public / Authenticated |
 | `GET` | `/api/reports/{id}` | Get report details and status history | Public / Authenticated |
 | `POST` | `/api/reports` | Submit a new civic issue report | Citizen / Authenticated |
-| `PUT` | `/api/reports/{id}` | Edit report (title/description) | Citizen Owner |
-| `DELETE` | `/api/reports/{id}` | Withdraw report | Citizen Owner |
+| `PUT` | `/api/reports/{id}` | Edit report (title/description, owner only) | Citizen Owner |
+| `DELETE` | `/api/reports/{id}` | Withdraw report (owner only) | Citizen Owner |
 | `PATCH` | `/api/reports/{id}/status` | Update report status & history | Moderator / Admin |
-| `GET` | `/api/reports/statistics` | Aggregated report counts and metrics | Moderator / Admin |
+| `GET` | `/api/reports/statistics` | Aggregated report counts and metrics | Moderator / Admin (Protected) |
 | `POST` | `/api/reports/ai-categorize` | Predict category from title and text | Public / Authenticated |
 | `POST` | `/api/reports/check-duplicates` | Detect nearby duplicate issues using Haversine & NLP | Public / Authenticated |
 
 ---
 
-## Default Demo Accounts
+## Default Demo Accounts (Development & Local Evaluation Only)
 
-For local evaluation and testing, the application initializes the following accounts automatically:
+Demo accounts with known passwords are **never** created in production. They are enabled only in development environments (`dev`, `h2`, `demo`, `local` profiles) or when explicitly configured via `SEED_DEMO_DATA=true`:
 
 | Role | Email | Password | Permissions |
 |---|---|---|---|
@@ -146,7 +157,7 @@ For local evaluation and testing, the application initializes the following acco
 | **Citizen** | `citizen@civiclens.gov` | `Citizen123!` | Submit issues, edit/withdraw owned reports |
 | **Admin** | `admin@civiclens.gov` | `Admin123!` | Full system and moderation access |
 
-*(You can also use the one-click demo account filler buttons directly on the `/login` screen).*
+*(In local development mode, you can also use the one-click demo filler buttons directly on the `/login` screen).*
 
 ---
 

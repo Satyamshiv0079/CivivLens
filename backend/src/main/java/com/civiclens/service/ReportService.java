@@ -157,16 +157,50 @@ public class ReportService {
         User moderator = userRepository.findByEmail(moderatorEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + moderatorEmail));
 
-        report.setStatus(request.getStatus());
+        // Moderator / Admin Authorization check
+        if (moderator.getRole() != Role.MODERATOR && moderator.getRole() != Role.ADMIN) {
+            throw new AccessDeniedException("Only moderators and administrators can update report status.");
+        }
+
+        ReportStatus current = report.getStatus();
+        ReportStatus next = request.getStatus();
+
+        if (current == next) {
+            throw new IllegalArgumentException("Report is already in " + current + " status.");
+        }
+
+        // Terminal status check: RESOLVED / REJECTED cannot be updated unless by ADMIN
+        if ((current == ReportStatus.RESOLVED || current == ReportStatus.REJECTED) && moderator.getRole() != Role.ADMIN) {
+            throw new IllegalStateException("Reports in " + current + " status cannot be updated further.");
+        }
+
+        // Validate legitimate workflow progression
+        boolean validTransition = switch (current) {
+            case SUBMITTED -> next == ReportStatus.VERIFIED || next == ReportStatus.REJECTED;
+            case VERIFIED -> next == ReportStatus.IN_PROGRESS || next == ReportStatus.REJECTED;
+            case IN_PROGRESS -> next == ReportStatus.RESOLVED || next == ReportStatus.REJECTED;
+            default -> moderator.getRole() == Role.ADMIN;
+        };
+
+        if (!validTransition && moderator.getRole() != Role.ADMIN) {
+            throw new IllegalStateException("Invalid status transition from " + current + " to " + next);
+        }
+
+        // Rejection requires a mandatory explanation reason
+        if (next == ReportStatus.REJECTED && (request.getComment() == null || request.getComment().trim().isEmpty())) {
+            throw new IllegalArgumentException("A rejection reason comment is required when rejecting a report.");
+        }
+
+        report.setStatus(next);
 
         String comment = request.getComment();
         if (comment == null || comment.isBlank()) {
-            comment = "Status changed to " + request.getStatus();
+            comment = "Status changed from " + current + " to " + next;
         }
 
         ReportStatusHistory history = new ReportStatusHistory(
                 report,
-                request.getStatus(),
+                next,
                 comment.trim(),
                 moderator
         );

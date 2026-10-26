@@ -128,8 +128,8 @@ class ReportServiceTest {
     }
 
     @Test
-    void updateStatus_ModeratorCanTransitionStatus() {
-        UpdateStatusRequest statusReq = new UpdateStatusRequest(ReportStatus.IN_PROGRESS, "Maintenance crew dispatched");
+    void updateStatus_ModeratorCanVerifyReport() {
+        UpdateStatusRequest statusReq = new UpdateStatusRequest(ReportStatus.VERIFIED, "Issue verified by road inspector");
 
         when(reportRepository.findById(100L)).thenReturn(Optional.of(report));
         when(userRepository.findByEmail("moderator@civiclens.gov")).thenReturn(Optional.of(moderator));
@@ -138,8 +138,47 @@ class ReportServiceTest {
         ReportDto result = reportService.updateStatus(100L, statusReq, "moderator@civiclens.gov");
 
         assertNotNull(result);
-        assertEquals(ReportStatus.IN_PROGRESS, report.getStatus());
+        assertEquals(ReportStatus.VERIFIED, report.getStatus());
         assertEquals(1, report.getStatusHistories().size());
-        assertEquals("Maintenance crew dispatched", report.getStatusHistories().get(0).getComment());
+        assertEquals("Issue verified by road inspector", report.getStatusHistories().get(0).getComment());
+    }
+
+    @Test
+    void updateStatus_RejectWithoutReason_ThrowsIllegalArgumentException() {
+        UpdateStatusRequest statusReq = new UpdateStatusRequest(ReportStatus.REJECTED, "");
+
+        when(reportRepository.findById(100L)).thenReturn(Optional.of(report));
+        when(userRepository.findByEmail("moderator@civiclens.gov")).thenReturn(Optional.of(moderator));
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+                reportService.updateStatus(100L, statusReq, "moderator@civiclens.gov")
+        );
+        assertTrue(ex.getMessage().contains("rejection reason comment is required"));
+    }
+
+    @Test
+    void updateStatus_InvalidTransition_ThrowsIllegalStateException() {
+        // Report is in SUBMITTED state; cannot jump directly to RESOLVED
+        UpdateStatusRequest statusReq = new UpdateStatusRequest(ReportStatus.RESOLVED, "Done");
+
+        when(reportRepository.findById(100L)).thenReturn(Optional.of(report));
+        when(userRepository.findByEmail("moderator@civiclens.gov")).thenReturn(Optional.of(moderator));
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+                reportService.updateStatus(100L, statusReq, "moderator@civiclens.gov")
+        );
+        assertTrue(ex.getMessage().contains("Invalid status transition"));
+    }
+
+    @Test
+    void updateStatus_CitizenAttempt_ThrowsAccessDeniedException() {
+        UpdateStatusRequest statusReq = new UpdateStatusRequest(ReportStatus.VERIFIED, "Verified by citizen");
+
+        when(reportRepository.findById(100L)).thenReturn(Optional.of(report));
+        when(userRepository.findByEmail("citizen@example.com")).thenReturn(Optional.of(author));
+
+        assertThrows(AccessDeniedException.class, () ->
+                reportService.updateStatus(100L, statusReq, "citizen@example.com")
+        );
     }
 }

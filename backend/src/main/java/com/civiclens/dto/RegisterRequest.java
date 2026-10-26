@@ -19,9 +19,16 @@ public class RegisterRequest {
     @Size(min = 6, max = 50, message = "Password must be at least 6 characters")
     private String password;
 
+    // Note: Public registration role cannot be escalated; role is ignored by AuthService.
     private Role role;
 
     public RegisterRequest() {
+    }
+
+    public RegisterRequest(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 
     public RegisterRequest(String name, String email, String password, Role role) {

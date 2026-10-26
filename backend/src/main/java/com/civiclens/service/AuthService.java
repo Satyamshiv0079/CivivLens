@@ -42,13 +42,13 @@ public class AuthService {
             throw new IllegalArgumentException("Email is already registered: " + request.getEmail());
         }
 
-        Role role = request.getRole() != null ? request.getRole() : Role.CITIZEN;
-
+        // Security: Public registration must always create a CITIZEN account.
+        // Never trust role input from the client to prevent privilege escalation.
         User user = new User(
                 request.getName().trim(),
                 request.getEmail().toLowerCase().trim(),
                 passwordEncoder.encode(request.getPassword()),
-                role
+                Role.CITIZEN
         );
 
         User savedUser = userRepository.save(user);

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User as UserIcon, Mail, Lock, Shield, AlertCircle, ArrowRight } from 'lucide-react';
+import { User as UserIcon, Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
 import { api } from '../services/api';
-import { Role, User } from '../types';
+import { User } from '../types';
 
 interface RegisterProps {
   onRegisterSuccess: (user: User) => void;
@@ -13,7 +13,6 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<Role>('CITIZEN');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +32,6 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
         name,
         email,
         password,
-        role,
       });
 
       api.setToken(response.token);
@@ -115,23 +113,6 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
               placeholder="••••••••"
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
-            Account Role
-          </label>
-          <div className="relative">
-            <Shield className="w-5 h-5 text-gray-400 absolute left-3 top-2.5 pointer-events-none" />
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value as Role)}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-            >
-              <option value="CITIZEN">Citizen (Report & Track Issues)</option>
-              <option value="MODERATOR">Municipal Moderator (Review & Resolve)</option>
-            </select>
           </div>
         </div>
 
