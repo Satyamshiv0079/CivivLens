@@ -1,6 +1,5 @@
 package com.civiclens.dto;
 
-import com.civiclens.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,9 +18,6 @@ public class RegisterRequest {
     @Size(min = 6, max = 50, message = "Password must be at least 6 characters")
     private String password;
 
-    // Note: Public registration role cannot be escalated; role is ignored by AuthService.
-    private Role role;
-
     public RegisterRequest() {
     }
 
@@ -29,13 +25,6 @@ public class RegisterRequest {
         this.name = name;
         this.email = email;
         this.password = password;
-    }
-
-    public RegisterRequest(String name, String email, String password, Role role) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
     }
 
     public String getName() {
@@ -60,13 +49,5 @@ public class RegisterRequest {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 }

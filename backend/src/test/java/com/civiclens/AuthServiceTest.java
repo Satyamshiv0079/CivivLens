@@ -72,19 +72,18 @@ class AuthServiceTest {
     }
 
     @Test
-    void register_PrivilegeEscalationAttempt_AlwaysAssignsCitizenRole() {
-        // Attacker attempts to register as ADMIN or MODERATOR
-        RegisterRequest maliciousRequest = new RegisterRequest("Attacker", "hacker@example.com", "Secret123!", Role.ADMIN);
+    void register_AlwaysAssignsCitizenRole() {
+        RegisterRequest request = new RegisterRequest("New Registrant", "citizen@example.com", "Secret123!");
 
-        when(userRepository.existsByEmail("hacker@example.com")).thenReturn(false);
+        when(userRepository.existsByEmail("citizen@example.com")).thenReturn(false);
         when(passwordEncoder.encode("Secret123!")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(tokenProvider.generateToken(eq("hacker@example.com"), eq("CITIZEN"))).thenReturn("mock-citizen-token");
+        when(tokenProvider.generateToken(eq("citizen@example.com"), eq("CITIZEN"))).thenReturn("mock-citizen-token");
 
-        AuthResponse response = authService.register(maliciousRequest);
+        AuthResponse response = authService.register(request);
 
         assertNotNull(response);
-        assertEquals(Role.CITIZEN, response.getUser().getRole(), "Privilege escalation must be prevented: role must always be CITIZEN");
+        assertEquals(Role.CITIZEN, response.getUser().getRole(), "Public registration must always assign CITIZEN role");
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(userCaptor.capture());
@@ -93,7 +92,7 @@ class AuthServiceTest {
 
     @Test
     void register_DuplicateEmail_ThrowsException() {
-        RegisterRequest request = new RegisterRequest("Duplicate User", "john@example.com", "Secret123!", Role.CITIZEN);
+        RegisterRequest request = new RegisterRequest("Duplicate User", "john@example.com", "Secret123!");
 
         when(userRepository.existsByEmail("john@example.com")).thenReturn(true);
 

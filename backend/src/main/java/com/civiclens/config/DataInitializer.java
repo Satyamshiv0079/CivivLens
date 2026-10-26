@@ -37,11 +37,20 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        // Enforce hard protection: demo accounts must NEVER be seeded when production profile is active
+        boolean isProduction = environment != null && Arrays.stream(environment.getActiveProfiles())
+                .anyMatch(p -> p.equalsIgnoreCase("prod") || p.equalsIgnoreCase("production"));
+
+        if (isProduction) {
+            log.info("Production profile is active: demo accounts can never be seeded. Skipping initialization.");
+            return;
+        }
+
         boolean isDevProfile = environment != null && Arrays.stream(environment.getActiveProfiles())
                 .anyMatch(p -> p.equalsIgnoreCase("dev") || p.equalsIgnoreCase("h2") || p.equalsIgnoreCase("demo") || p.equalsIgnoreCase("local"));
 
         if (!seedDemoData && !isDevProfile) {
-            log.info("Production mode: skipping demo account initialization. No default credentials created.");
+            log.info("Demo account seeding is disabled (seedDemoData=false and not a dev/demo profile). Skipping initialization.");
             return;
         }
 

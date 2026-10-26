@@ -152,4 +152,54 @@ class ReportControllerTest {
         mockMvc.perform(get("/api/reports/statistics"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void aiCategorize_ValidInput_Returns200() throws Exception {
+        String jsonPayload = """
+                {
+                    "title": "Large crater in asphalt",
+                    "description": "Deep pothole damaging vehicles"
+                }
+                """;
+
+        mockMvc.perform(post("/api/reports/ai-categorize")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.suggestedCategory").value("POTHOLE"));
+    }
+
+    @Test
+    void checkDuplicates_ValidInput_Returns200() throws Exception {
+        String jsonPayload = """
+                {
+                    "latitude": 12.9716,
+                    "longitude": 77.5946,
+                    "category": "POTHOLE",
+                    "title": "Road crater"
+                }
+                """;
+
+        mockMvc.perform(post("/api/reports/check-duplicates")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void checkDuplicates_InvalidCoordinates_Returns400() throws Exception {
+        String jsonPayload = """
+                {
+                    "latitude": 120.0,
+                    "longitude": 77.5946,
+                    "category": "POTHOLE"
+                }
+                """;
+
+        mockMvc.perform(post("/api/reports/check-duplicates")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Validation Failed"));
+    }
 }

@@ -5,8 +5,10 @@ import com.civiclens.entity.IssueCategory;
 import com.civiclens.entity.ReportStatus;
 import com.civiclens.entity.User;
 import com.civiclens.repository.UserRepository;
+import com.civiclens.security.AiRateLimiter;
 import com.civiclens.service.AiService;
 import com.civiclens.service.ReportService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/reports")
@@ -26,15 +27,18 @@ public class ReportController {
     private final ReportService reportService;
     private final UserRepository userRepository;
     private final AiService aiService;
+    private final AiRateLimiter aiRateLimiter;
 
     public ReportController(
             ReportService reportService,
             UserRepository userRepository,
-            AiService aiService
+            AiService aiService,
+            AiRateLimiter aiRateLimiter
     ) {
         this.reportService = reportService;
         this.userRepository = userRepository;
         this.aiService = aiService;
+        this.aiRateLimiter = aiRateLimiter;
     }
 
     /**
@@ -143,29 +147,47 @@ public class ReportController {
     }
 
     /**
-     * Stage 7 Enhancement: AI-assisted category prediction from title & description
+     * AI-assisted category prediction with request validation and rate limiting
      */
     @PostMapping("/ai-categorize")
-    public ResponseEntity<AiCategorizationDto> aiCategorize(@RequestBody Map<String, String> payload) {
-        String title = payload.get("title");
-        String description = payload.get("description");
+    public ResponseEntity<AiCategorizationDto> aiCategorize(
+            @Valid @RequestBody(required = false) AiCategorizeRequest request,
+            HttpServletRequest httpRequest
+    ) {
+        aiRateLimiter.checkRateLimit(extractClientIp(httpRequest));
+
+        String title = request != null ? request.getTitle() : "";
+        String description = request != null ? request.getDescription() : "";
         AiCategorizationDto result = aiService.categorize(title, description);
         return ResponseEntity.ok(result);
     }
 
     /**
-     * Stage 7 Enhancement: Spatial & semantic duplicate detection
+     * Spatial & semantic duplicate detection with request validation and rate limiting
      */
     @PostMapping("/check-duplicates")
-    public ResponseEntity<List<DuplicateCandidateDto>> checkDuplicates(@RequestBody Map<String, Object> payload) {
-        Double lat = payload.get("latitude") != null ? Double.valueOf(payload.get("latitude").toString()) : null;
-        Double lng = payload.get("longitude") != null ? Double.valueOf(payload.get("longitude").toString()) : null;
-        String catStr = payload.get("category") != null ? payload.get("category").toString() : null;
-        IssueCategory category = catStr != null ? IssueCategory.valueOf(catStr) : null;
-        String title = payload.get("title") != null ? payload.get("title").toString() : "";
-        String description = payload.get("description") != null ? payload.get("description").toString() : "";
+    public ResponseEntity<List<DuplicateCandidateDto>> checkDuplicates(
+            @Valid @RequestBody CheckDuplicatesRequest request,
+            HttpServletRequest httpRequest
+    ) {
+        aiRateLimiter.checkRateLimit(extractClientIp(httpRequest));
 
-        List<DuplicateCandidateDto> duplicates = aiService.detectDuplicates(lat, lng, category, title, description);
+        List<DuplicateCandidateDto> duplicates = aiService.detectDuplicates(
+                request.getLatitude(),
+                request.getLongitude(),
+                request.getCategory(),
+                request.getTitle(),
+                request.getDescription()
+        );
         return ResponseEntity.ok(duplicates);
+    }
+
+    private String extractClientIp(HttpServletRequest request) {
+        if (request == null) return "anonymous";
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        if (xForwardedFor != null && !xForwardedFor.isBlank()) {
+            return xForwardedFor.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }

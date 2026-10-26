@@ -34,6 +34,18 @@ class DataInitializerTest {
     }
 
     @Test
+    void run_InProductionEnvironment_EvenWithSeedDemoDataTrue_NeverSeedsDemoAccounts() {
+        MockEnvironment prodEnv = new MockEnvironment();
+        prodEnv.setActiveProfiles("production");
+
+        DataInitializer initializer = new DataInitializer(userRepository, passwordEncoder, prodEnv, true);
+        initializer.run();
+
+        // Must never save any demo accounts when production profile is active, regardless of seed-demo-data
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
     void run_InDevEnvironment_SeedsDemoAccounts() {
         MockEnvironment devEnv = new MockEnvironment();
         devEnv.setActiveProfiles("dev");
@@ -49,14 +61,14 @@ class DataInitializerTest {
     }
 
     @Test
-    void run_WithSeedDemoDataPropertyTrue_SeedsDemoAccountsEvenInProd() {
-        MockEnvironment prodEnv = new MockEnvironment();
-        prodEnv.setActiveProfiles("prod");
+    void run_WithSeedDemoDataTrue_InNonProd_SeedsDemoAccounts() {
+        MockEnvironment defaultEnv = new MockEnvironment();
+        defaultEnv.setActiveProfiles("default");
 
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword");
 
-        DataInitializer initializer = new DataInitializer(userRepository, passwordEncoder, prodEnv, true);
+        DataInitializer initializer = new DataInitializer(userRepository, passwordEncoder, defaultEnv, true);
         initializer.run();
 
         verify(userRepository, times(3)).save(any(User.class));

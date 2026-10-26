@@ -101,11 +101,11 @@ export const Home: React.FC = () => {
                   zoom={12}
                 />
                 {!loading && recentReports.length === 0 && (
-                  <div className="absolute inset-0 bg-white/85 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-[500]">
-                    <MapPin className="w-8 h-8 text-gray-400 mb-2" />
-                    <p className="text-sm font-bold text-gray-800">No civic issues reported yet</p>
-                    <p className="text-xs text-gray-500 mt-1 max-w-xs">
-                      When community members submit issues, markers will automatically plot on this map.
+                  <div className="absolute inset-0 bg-white/90 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-[500]">
+                    <MapPin className="w-8 h-8 text-slate-400 mb-2" />
+                    <p className="text-sm font-bold text-gray-900">Map Preview</p>
+                    <p className="text-xs text-slate-500 mt-1 max-w-xs">
+                      Centered on default municipal coordinates. As community members submit reports, verified civic pins will plot here.
                     </p>
                   </div>
                 )}
@@ -115,7 +115,7 @@ export const Home: React.FC = () => {
                 <span>
                   {recentReports.length > 0
                     ? `Showing ${recentReports.length} recently submitted report(s)`
-                    : 'Awaiting first community report'}
+                    : 'Default preview coordinates (No active reports)'}
                 </span>
                 <span>OpenStreetMap &bull; Leaflet</span>
               </div>
